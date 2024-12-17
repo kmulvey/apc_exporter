@@ -1,0 +1,2 @@
+systemctl disable apc_exporter
+systemctl stop apc_exporter
