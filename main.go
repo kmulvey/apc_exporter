@@ -33,7 +33,7 @@ func main() {
 	var pollInterval time.Duration
 	var v bool
 	flag.StringVar(&cmdPath, "cmd-path", "/usr/sbin/apcaccess", "absolute path to pwstat command")
-	flag.StringVar(&promAddr, "prom-addr", ":9300", "bind address of the prom http server")
+	flag.StringVar(&promAddr, "prom-addr", ":9400", "bind address of the prom http server")
 	flag.DurationVar(&pollInterval, "poll-interval", time.Second*5, "time interval to gather power stats")
 	flag.BoolVar(&v, "version", false, "print version")
 	flag.BoolVar(&v, "v", false, "print version")
