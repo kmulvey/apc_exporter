@@ -27,8 +27,6 @@ type BatteryData struct {
 	Nompower  uint16        `description:"Nominal power output in watts"`
 }
 
-const timeFormat = "2006-01-02 15:04:05 -0700"
-
 func parse(cmdOutput string) (BatteryData, error) {
 
 	var batteryData BatteryData
@@ -175,12 +173,13 @@ func parseDuration(line string) (time.Duration, error) {
 		return 0, err
 	}
 
-	if unit == "Hours" {
-		return time.Duration(val) * time.Hour, nil
-	} else if unit == "Minutes" {
-		return time.Duration(val) * time.Minute, nil
-	} else if unit == "Seconds" {
+	switch unit {
+	case "Seconds":
 		return time.Duration(val) * time.Second, nil
+	case "Minutes":
+		return time.Duration(val) * time.Minute, nil
+	case "Hours":
+		return time.Duration(val) * time.Hour, nil
 	}
 
 	return 0, errors.New("unable to parse duration: " + line)

@@ -98,38 +98,6 @@ var (
 		Help:      "Nominal power output in watts",
 	}, []string{"model_name"})
 
-	///////////////////
-
-	powerSuppliedByGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
-		Name:      "power_supplied_by",
-		Help:      "0=Utility Power / 1=Battery Power",
-	}, []string{"model_name"})
-
-	utilityVoltageGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
-		Name:      "utility_voltage",
-		Help:      "Utility Voltage",
-	}, []string{"model_name"})
-
-	outputVoltageGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
-		Name:      "output_voltage",
-		Help:      "Output Voltage",
-	}, []string{"model_name"})
-
-	batteryCapacityGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
-		Name:      "battery_capacity",
-		Help:      "Battery Capacity as %",
-	}, []string{"model_name"})
-
-	loadWattsGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
-		Namespace: promNamespace,
-		Name:      "load_watts",
-		Help:      "Current Load in watts",
-	}, []string{"model_name"})
-
 	loadPctGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{
 		Namespace: promNamespace,
 		Name:      "load_pct",

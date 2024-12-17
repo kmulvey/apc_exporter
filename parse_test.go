@@ -111,3 +111,27 @@ func TestParse(t *testing.T) {
 	assert.Equal(t, float32(24.0), batteryData.Nombattv)
 	assert.Equal(t, uint16(900), batteryData.Nompower)
 }
+
+func TestParseFailure(t *testing.T) {
+	t.Parallel()
+
+	batteryData, err := parse(testOutputPowerFailure)
+	assert.NoError(t, err)
+
+	assert.Equal(t, "ONBATT", batteryData.Status)
+	assert.Equal(t, float32(0.0), batteryData.Linev)
+	assert.Equal(t, float32(12.0), batteryData.Loadpct)
+	assert.Equal(t, float32(100.0), batteryData.Bcharge)
+	assert.Equal(t, 56*time.Minute, batteryData.Timeleft)
+	assert.Equal(t, uint8(5), batteryData.Mbattchg)
+	assert.Equal(t, 3*time.Minute, batteryData.Mintimel)
+	assert.Equal(t, 0*time.Second, batteryData.Maxtime)
+	assert.Equal(t, float32(88.0), batteryData.Lotrans)
+	assert.Equal(t, float32(142.0), batteryData.Hitrans)
+	assert.Equal(t, float32(26.1), batteryData.Battv)
+	assert.Equal(t, 6*time.Second, batteryData.Tonbatt)
+	assert.Equal(t, 6*time.Second, batteryData.Cumonbatt)
+	assert.Equal(t, uint8(120), batteryData.Nominv)
+	assert.Equal(t, float32(24.0), batteryData.Nombattv)
+	assert.Equal(t, uint16(900), batteryData.Nompower)
+}
