@@ -1,0 +1,13 @@
+[Unit]
+Description=Prometheus Exporter for APC UPSs
+Documentation=https://github.com/kmulvey/apc_exporter
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+Restart=on-failure
+ExecStart=/usr/bin/apc_exporter -prom-addr ":9400"
+
+[Install]
+WantedBy=multi-user.target
