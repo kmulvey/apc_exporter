@@ -1,5 +1,5 @@
 # apc_exporter
-[![Build](https://github.com/kmulvey/apc_exporter/actions/workflows/build.yml/badge.svg)](https://github.com/kmulvey/apc_exporter/actions/workflows/build.yml) [![Release](https://github.com/kmulvey/apc_exporter/actions/workflows/release.yml/badge.svg)](https://github.com/kmulvey/apc_exporter/actions/workflows/release.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/kmulvey/apc_exporter)](https://goreportcard.com/report/github.com/kmulvey/cpwatapc_exporterch) [![Go Reference](https://pkg.go.dev/badge/github.com/kmulvey/apc_exporter.svg)](https://pkg.go.dev/github.com/kmulvey/apc_exporter)
+[![Build](https://github.com/kmulvey/apc_exporter/actions/workflows/build.yml/badge.svg)](https://github.com/kmulvey/apc_exporter/actions/workflows/build.yml) [![Release](https://github.com/kmulvey/apc_exporter/actions/workflows/release.yml/badge.svg)](https://github.com/kmulvey/apc_exporter/actions/workflows/release.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/kmulvey/apc_exporter)](https://goreportcard.com/report/github.com/kmulvey/apc_exporter) [![Go Reference](https://pkg.go.dev/badge/github.com/kmulvey/apc_exporter.svg)](https://pkg.go.dev/github.com/kmulvey/apc_exporter)
 
 Monitor and store APC UPS statistics.
 
