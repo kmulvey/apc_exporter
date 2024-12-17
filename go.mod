@@ -1,6 +1,6 @@
 module github.com/kmulvey/apc_exporter
 
-go 1.23.1
+go 1.23.4
 
 require (
 	github.com/prometheus/client_golang v1.20.5
