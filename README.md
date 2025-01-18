@@ -7,6 +7,9 @@ Monitor and store APC UPS statistics.
 Several linux package formats are available in the releases. Becasue pwrstat needs to be run as root, this tool needs to be run as root as well.
 
 ### Manual linux install:
+- install apcupsd
+  - sudo dnf install apcupsd
+  - sudo apt-get install apcupsd
 - `sudo cp apc_exporter /usr/bin/` (this path can be changed if you like, just be sure to change the path in the service file as well)
 - `sudo cp apc_exporter.service /etc/systemd/system/`
 - `sudo systemctl daemon-reload`
