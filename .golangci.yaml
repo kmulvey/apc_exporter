@@ -11,9 +11,6 @@ linters:
     - bidichk
     - bodyclose
     - containedctx
-      #- cyclop
-      #- dupl
-    - exportloopref
     - gocritic
     - goconst
     - gosec
