@@ -32,6 +32,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 	var batteryData BatteryData
 	var err error
 	var lines = strings.Split(cmdOutput, "\n")
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
@@ -52,7 +53,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing volts: %s, err: %w", valueString, err)
 			}
 			batteryData.Linev = val
 
@@ -60,7 +61,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Percent", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing load: %s, err: %w", valueString, err)
 			}
 			batteryData.Loadpct = val
 
@@ -68,41 +69,41 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Percent", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing charge: %s, err: %w", valueString, err)
 			}
 			batteryData.Bcharge = val
 
 		case "TIMELEFT":
 			batteryData.Timeleft, err = parseDuration(valueString)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing timeleft: %s, err: %w", valueString, err)
 			}
 
 		case "MBATTCHG":
 			var val uint8
 			_, err := fmt.Sscanf(valueString, "%d Percent", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing mbattchg: %s, err: %w", valueString, err)
 			}
 			batteryData.Mbattchg = val
 
 		case "MINTIMEL":
 			batteryData.Mintimel, err = parseDuration(valueString)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing mintimel: %s, err: %w", valueString, err)
 			}
 
 		case "MAXTIME":
 			batteryData.Maxtime, err = parseDuration(valueString)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing maxtime: %s, err: %w", valueString, err)
 			}
 
 		case "LOTRANS":
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing lotrans: %s, err: %w", valueString, err)
 			}
 			batteryData.Lotrans = val
 
@@ -110,7 +111,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing hitrans: %s, err: %w", valueString, err)
 			}
 			batteryData.Hitrans = val
 
@@ -118,27 +119,27 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing battv: %s, err: %w", valueString, err)
 			}
 			batteryData.Battv = val
 
 		case "TONBATT":
 			batteryData.Tonbatt, err = parseDuration(valueString)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing tonbatt: %s, err: %w", valueString, err)
 			}
 
 		case "CUMONBATT":
 			batteryData.Cumonbatt, err = parseDuration(valueString)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing cumonbatt: %s, err: %w", valueString, err)
 			}
 
 		case "NOMINV":
 			var val uint8
 			_, err := fmt.Sscanf(valueString, "%d Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing nominv: %s, err: %w", valueString, err)
 			}
 			batteryData.Nominv = val
 
@@ -146,7 +147,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val float32
 			_, err := fmt.Sscanf(valueString, "%f Volts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing nombattv: %s, err: %w", valueString, err)
 			}
 			batteryData.Nombattv = val
 
@@ -154,7 +155,7 @@ func parse(cmdOutput string) (BatteryData, error) {
 			var val uint16
 			_, err := fmt.Sscanf(valueString, "%d Watts", &val)
 			if err != nil {
-				return batteryData, err
+				return batteryData, fmt.Errorf("error parsing nompower: %s, err: %w", valueString, err)
 			}
 			batteryData.Nompower = val
 
@@ -170,7 +171,7 @@ func parseDuration(line string) (time.Duration, error) {
 	var unit string
 	_, err := fmt.Sscanf(line, "%f %s", &val, &unit)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("error parsing duration: %s, err: %w", line, err)
 	}
 
 	switch unit {
@@ -182,5 +183,5 @@ func parseDuration(line string) (time.Duration, error) {
 		return time.Duration(val) * time.Hour, nil
 	}
 
-	return 0, errors.New("unable to parse duration: " + line)
+	return 0, errors.New("unable to parse duration: " + line) //nolint:goerr113
 }
