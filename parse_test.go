@@ -7,7 +7,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var testOutputNormal = `
+// nolint: gochecknoglobals
+var (
+	testOutputNormal = `
 APC      : 001,036,0872
 DATE     : 2024-12-15 08:39:55 -0700  
 HOSTNAME : deepthought
@@ -47,7 +49,7 @@ FIRMWARE : 957.e5 .D USB FW:e5
 END APC  : 2024-12-15 08:40:03 -0700  
 `
 
-var testOutputPowerFailure = `
+	testOutputPowerFailure = `
 APC      : 001,037,0901
 DATE     : 2024-12-16 20:37:41 -0700  
 HOSTNAME : deepthought
@@ -87,51 +89,83 @@ NOMPOWER : 900 Watts
 FIRMWARE : 957.e5 .D USB FW:e5
 END APC  : 2024-12-16 20:37:44 -0700  
 `
+)
 
 func TestParse(t *testing.T) {
 	t.Parallel()
 
-	batteryData, err := parse(testOutputNormal)
-	assert.NoError(t, err)
+	tests := []struct {
+		name     string
+		input    string
+		expected BatteryData
+	}{
+		{
+			name:  "Normal",
+			input: testOutputNormal,
+			expected: BatteryData{
+				Status:    "ONLINE",
+				Linev:     123.0,
+				Loadpct:   29.0,
+				Bcharge:   97.0,
+				Timeleft:  21 * time.Minute,
+				Mbattchg:  5,
+				Mintimel:  3 * time.Minute,
+				Maxtime:   0 * time.Second,
+				Lotrans:   88.0,
+				Hitrans:   142.0,
+				Battv:     27.3,
+				Tonbatt:   0 * time.Second,
+				Cumonbatt: 0 * time.Second,
+				Nominv:    120,
+				Nombattv:  24.0,
+				Nompower:  900,
+			},
+		},
+		{
+			name:  "PowerFailure",
+			input: testOutputPowerFailure,
+			expected: BatteryData{
+				Status:    "ONBATT",
+				Linev:     0.0,
+				Loadpct:   12.0,
+				Bcharge:   100.0,
+				Timeleft:  56 * time.Minute,
+				Mbattchg:  5,
+				Mintimel:  3 * time.Minute,
+				Maxtime:   0 * time.Second,
+				Lotrans:   88.0,
+				Hitrans:   142.0,
+				Battv:     26.1,
+				Tonbatt:   6 * time.Second,
+				Cumonbatt: 6 * time.Second,
+				Nominv:    120,
+				Nombattv:  24.0,
+				Nompower:  900,
+			},
+		},
+	}
 
-	assert.Equal(t, "ONLINE", batteryData.Status)
-	assert.Equal(t, float32(123.0), batteryData.Linev)
-	assert.Equal(t, float32(29.0), batteryData.Loadpct)
-	assert.Equal(t, float32(97.0), batteryData.Bcharge)
-	assert.Equal(t, 21*time.Minute, batteryData.Timeleft)
-	assert.Equal(t, uint8(5), batteryData.Mbattchg)
-	assert.Equal(t, 3*time.Minute, batteryData.Mintimel)
-	assert.Equal(t, 0*time.Second, batteryData.Maxtime)
-	assert.Equal(t, float32(88.0), batteryData.Lotrans)
-	assert.Equal(t, float32(142.0), batteryData.Hitrans)
-	assert.Equal(t, float32(27.3), batteryData.Battv)
-	assert.Equal(t, 0*time.Second, batteryData.Tonbatt)
-	assert.Equal(t, 0*time.Second, batteryData.Cumonbatt)
-	assert.Equal(t, uint8(120), batteryData.Nominv)
-	assert.Equal(t, float32(24.0), batteryData.Nombattv)
-	assert.Equal(t, uint16(900), batteryData.Nompower)
-}
-
-func TestParseFailure(t *testing.T) {
-	t.Parallel()
-
-	batteryData, err := parse(testOutputPowerFailure)
-	assert.NoError(t, err)
-
-	assert.Equal(t, "ONBATT", batteryData.Status)
-	assert.Equal(t, float32(0.0), batteryData.Linev)
-	assert.Equal(t, float32(12.0), batteryData.Loadpct)
-	assert.Equal(t, float32(100.0), batteryData.Bcharge)
-	assert.Equal(t, 56*time.Minute, batteryData.Timeleft)
-	assert.Equal(t, uint8(5), batteryData.Mbattchg)
-	assert.Equal(t, 3*time.Minute, batteryData.Mintimel)
-	assert.Equal(t, 0*time.Second, batteryData.Maxtime)
-	assert.Equal(t, float32(88.0), batteryData.Lotrans)
-	assert.Equal(t, float32(142.0), batteryData.Hitrans)
-	assert.Equal(t, float32(26.1), batteryData.Battv)
-	assert.Equal(t, 6*time.Second, batteryData.Tonbatt)
-	assert.Equal(t, 6*time.Second, batteryData.Cumonbatt)
-	assert.Equal(t, uint8(120), batteryData.Nominv)
-	assert.Equal(t, float32(24.0), batteryData.Nombattv)
-	assert.Equal(t, uint16(900), batteryData.Nompower)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			batteryData, err := parse(tt.input)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expected.Status, batteryData.Status)
+			assert.Equal(t, tt.expected.Linev, batteryData.Linev)       // nolint: testifylint
+			assert.Equal(t, tt.expected.Loadpct, batteryData.Loadpct)   // nolint: testifylint
+			assert.Equal(t, tt.expected.Bcharge, batteryData.Bcharge)   // nolint: testifylint
+			assert.Equal(t, tt.expected.Timeleft, batteryData.Timeleft) // nolint: testifylint
+			assert.Equal(t, tt.expected.Mbattchg, batteryData.Mbattchg)
+			assert.Equal(t, tt.expected.Mintimel, batteryData.Mintimel)
+			assert.Equal(t, tt.expected.Maxtime, batteryData.Maxtime)
+			assert.Equal(t, tt.expected.Lotrans, batteryData.Lotrans)
+			assert.Equal(t, tt.expected.Hitrans, batteryData.Hitrans)
+			assert.Equal(t, tt.expected.Battv, batteryData.Battv)
+			assert.Equal(t, tt.expected.Tonbatt, batteryData.Tonbatt)
+			assert.Equal(t, tt.expected.Cumonbatt, batteryData.Cumonbatt)
+			assert.Equal(t, tt.expected.Nominv, batteryData.Nominv)
+			assert.Equal(t, tt.expected.Nombattv, batteryData.Nombattv)
+			assert.Equal(t, tt.expected.Nompower, batteryData.Nompower)
+		})
+	}
 }
