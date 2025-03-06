@@ -23,10 +23,10 @@ linters:
     - gomoddirectives # go.mod linting
     - gofumpt # aggressive gofmt
     - cyclop # TEMP ... should be addressed
+    - tenv # Replaced by usetesting
 
 linters-settings:
   govet:
-    check-shadowing: false
     disable-all: false
     enable-all: true
     disable:
