@@ -27,6 +27,7 @@ type BatteryData struct {
 	Nompower  uint16        `description:"Nominal power output in watts"`
 }
 
+//nolint:gocognit,funlen,gocyclo
 func parse(cmdOutput string) (BatteryData, error) {
 
 	var batteryData BatteryData

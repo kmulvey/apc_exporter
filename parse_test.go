@@ -91,6 +91,7 @@ END APC  : 2024-12-16 20:37:44 -0700
 `
 )
 
+//nolint:gocognit,funlen,gocyclo
 func TestParse(t *testing.T) {
 	t.Parallel()
 
@@ -151,20 +152,20 @@ func TestParse(t *testing.T) {
 			batteryData, err := parse(tt.input)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expected.Status, batteryData.Status)
-			assert.Equal(t, tt.expected.Linev, batteryData.Linev)       // nolint: testifylint
-			assert.Equal(t, tt.expected.Loadpct, batteryData.Loadpct)   // nolint: testifylint
-			assert.Equal(t, tt.expected.Bcharge, batteryData.Bcharge)   // nolint: testifylint
-			assert.Equal(t, tt.expected.Timeleft, batteryData.Timeleft) // nolint: testifylint
+			assert.InEpsilon(t, tt.expected.Linev, batteryData.Linev, 0.001)
+			assert.InEpsilon(t, tt.expected.Loadpct, batteryData.Loadpct, 0.001)
+			assert.InEpsilon(t, tt.expected.Bcharge, batteryData.Bcharge, 0.001)
+			assert.Equal(t, tt.expected.Timeleft, batteryData.Timeleft)
 			assert.Equal(t, tt.expected.Mbattchg, batteryData.Mbattchg)
 			assert.Equal(t, tt.expected.Mintimel, batteryData.Mintimel)
 			assert.Equal(t, tt.expected.Maxtime, batteryData.Maxtime)
-			assert.Equal(t, tt.expected.Lotrans, batteryData.Lotrans)
-			assert.Equal(t, tt.expected.Hitrans, batteryData.Hitrans)
-			assert.Equal(t, tt.expected.Battv, batteryData.Battv)
+			assert.InEpsilon(t, tt.expected.Lotrans, batteryData.Lotrans, 0.001)
+			assert.InEpsilon(t, tt.expected.Hitrans, batteryData.Hitrans, 0.001)
+			assert.InEpsilon(t, tt.expected.Battv, batteryData.Battv, 0.001)
 			assert.Equal(t, tt.expected.Tonbatt, batteryData.Tonbatt)
 			assert.Equal(t, tt.expected.Cumonbatt, batteryData.Cumonbatt)
 			assert.Equal(t, tt.expected.Nominv, batteryData.Nominv)
-			assert.Equal(t, tt.expected.Nombattv, batteryData.Nombattv)
+			assert.InEpsilon(t, tt.expected.Nombattv, batteryData.Nombattv, 0.001)
 			assert.Equal(t, tt.expected.Nompower, batteryData.Nompower)
 		})
 	}
