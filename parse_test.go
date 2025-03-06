@@ -152,7 +152,11 @@ func TestParse(t *testing.T) {
 			batteryData, err := parse(tt.input)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expected.Status, batteryData.Status)
-			assert.InEpsilon(t, tt.expected.Linev, batteryData.Linev, 0.001)
+			if tt.expected.Linev == 0 {
+				assert.Equal(t, tt.expected.Linev, batteryData.Linev) //nolint: testifylint
+			} else {
+				assert.InEpsilon(t, tt.expected.Linev, batteryData.Linev, 0.001)
+			}
 			assert.InEpsilon(t, tt.expected.Loadpct, batteryData.Loadpct, 0.001)
 			assert.InEpsilon(t, tt.expected.Bcharge, batteryData.Bcharge, 0.001)
 			assert.Equal(t, tt.expected.Timeleft, batteryData.Timeleft)
