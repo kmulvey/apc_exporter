@@ -16,13 +16,10 @@ import (
 	"go.szostok.io/version/printer"
 )
 
-var dateFormat = "2006/01/02 15:04:05"
-
 func main() {
-
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp:   true,
-		TimestampFormat: dateFormat,
+		TimestampFormat: "2006/01/02 15:04:05",
 	})
 
 	var sigChannel = make(chan os.Signal, 1)
@@ -62,15 +59,15 @@ func main() {
 			log.Fatal("http server error: ", err)
 		}
 	}()
-	fmt.Println("started, go to grafana to monitor")
-
-	gatherAndSaveStats(cmdPath)
+	log.Info("started, go to grafana to monitor")
 
 	var ticker = time.NewTicker(pollInterval)
 	for {
 		select {
 		case <-ticker.C:
-			gatherAndSaveStats(cmdPath)
+			if err := gatherAndSaveStats(cmdPath); err != nil {
+				log.Error(err)
+			}
 
 		case <-sigChannel:
 			log.Info("shutting down")
@@ -79,17 +76,15 @@ func main() {
 	}
 }
 
-func gatherAndSaveStats(cmdPath string) {
+func gatherAndSaveStats(cmdPath string) error {
 	out, err := getPowerStats(cmdPath)
 	if err != nil {
-		log.Error(err)
+		return fmt.Errorf("error getting power stats: %w", err)
 	}
 
 	batteryData, err := parse(out)
 	if err != nil {
-		log.Error(err)
-		fmt.Printf("[%s]", out)
-		fmt.Println()
+		return fmt.Errorf("error parsing power stats: %w", err)
 	}
 
 	if batteryData.Status == "ONLINE" {
@@ -113,4 +108,6 @@ func gatherAndSaveStats(cmdPath string) {
 	nominv.WithLabelValues(batteryData.Model).Set(float64(batteryData.Nominv))
 	nombattv.WithLabelValues(batteryData.Model).Set(float64(batteryData.Nombattv))
 	nompower.WithLabelValues(batteryData.Model).Set(float64(batteryData.Nompower))
+
+	return nil
 }
