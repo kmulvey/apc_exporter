@@ -27,6 +27,8 @@ type BatteryData struct {
 	Nompower  uint16        `description:"Nominal power output in watts"`
 }
 
+var ErrUnableToParseDuration = errors.New("unable to parse duration")
+
 //nolint:gocognit,funlen,gocyclo
 func parse(cmdOutput string) (BatteryData, error) {
 
@@ -184,5 +186,5 @@ func parseDuration(line string) (time.Duration, error) {
 		return time.Duration(val) * time.Hour, nil
 	}
 
-	return 0, errors.New("unable to parse duration: " + line) //nolint:goerr113
+	return 0, fmt.Errorf("%w: %s", ErrUnableToParseDuration, line)
 }

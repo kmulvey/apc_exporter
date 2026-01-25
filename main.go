@@ -87,9 +87,10 @@ func gatherAndSaveStats(cmdPath string) error {
 		return fmt.Errorf("error parsing power stats: %w", err)
 	}
 
-	if batteryData.Status == "ONLINE" {
+	switch batteryData.Status {
+	case "ONLINE":
 		statusGauge.WithLabelValues(batteryData.Model).Set(0)
-	} else if batteryData.Status == "ONBATT" {
+	case "ONBATT":
 		statusGauge.WithLabelValues(batteryData.Model).Set(1)
 	}
 
