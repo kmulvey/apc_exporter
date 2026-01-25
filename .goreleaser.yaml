@@ -49,7 +49,12 @@ checksum:
   name_template: 'checksums.txt'
 
 snapshot:
-  name_template: "{{ incpatch .Version }}-snapshot"
+  version_template: >-
+    {{- if .IsSnapshot -}}
+      {{ incpatch .Version }}-snapshot
+    {{- else -}}
+      {{ .Version }}
+    {{- end -}}
 
 nfpms:
   # note that this is an array of nfpm configs
@@ -98,8 +103,8 @@ nfpms:
         dst: /etc/systemd/system/apc_exporter.service
 
     scripts:
-      postinstall: "scripts/postinstall.sh"
-      preremove: "scripts/preremove.sh"
+      postinstall: scripts/postinstall.sh
+      preremove: scripts/preremove.sh
 
     # Custom configuration applied only to the RPM packager.
     rpm:
