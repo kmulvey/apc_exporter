@@ -32,7 +32,7 @@ release:
       
 archives:
   - id: dist
-    builds:
+    ids:
       - apc_exporter
     name_template: >-
       {{ .ProjectName }}_
@@ -63,7 +63,7 @@ nfpms:
 
     package_name: apc_exporter
 
-    builds:
+    ids:
       - apc_exporter
 
     # Your app's vendor.
