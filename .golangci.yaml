@@ -27,6 +27,7 @@ linters:
     - noctx # context not used in this codebase
     - gochecknoinits # we use init for prometheus metrics registration
     - noinlineerr # we don't care about inlining errors
+    - goconst
   settings:
     revive:
       rules:
